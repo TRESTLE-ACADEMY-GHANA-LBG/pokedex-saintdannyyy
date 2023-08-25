@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pokédex</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h2>Welcome to Pokédex</h2>
+    <h5>Your collection of all Pokémons</h5>
+    <h4>Your collection of all Pokémons</h4>
+    <input type="text" id="search-input" placeholder="Search for Pokémon">
+<div id="search-results" class="search-results"></div>
+
+    <div id="pokemon-list" class="pokemon-list">
+    </div>
+    
+    <div id="pokemon-details">
+    </div>
+
+    <div id="pagination" class="pagination">
+        <button id="prev-btn" class="page-btn" disabled>&lt; Prev</button>
+        <span id="page-num">Page 1</span>
+        <button id="next-btn" class="page-btn">Next &gt;</button>
+    </div>
+
+    <script src="app.js"></script>
+    <script>
+    const pokemonCards = document.querySelectorAll(".pokemon-card");
+    pokemonCards.forEach(card => {
+        card.addEventListener("click", () => {
+            const pokemonName = card.querySelector("p").textContent;
+            window.location.href = `PokemonDetails/index.html?name=${pokemonName}`;
+        });
+    });
+    </script>
+</body>
+</html>
+
+</body>
+</html>
+
+
+</body>
+</html>
