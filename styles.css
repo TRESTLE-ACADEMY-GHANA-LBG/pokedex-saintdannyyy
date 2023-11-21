@@ -2,7 +2,7 @@
     scroll-behavior: smooth;
 }
 body{
-    background-color: #007bff;
+    background-color: #d9d9d9;
 }
 h2{
     text-align: center;
@@ -39,9 +39,8 @@ h5{
     display: flex;
     flex-direction: column;
     align-items: center;
-    border: 2px #ffffff groove;
-    border-radius: 2%;
-    background-color: #ffffcc;
+    background-color: #c2c2a3;
+    box-shadow: 4px 0 8px 4px  #595959;
     width: calc(25% - 20px);
     cursor: pointer;
 }
@@ -60,7 +59,7 @@ h5{
 }
 
 .page-btn {
-    background-color: #5793d3;
+    background-color: #337ece;
     color: white;
     border: 3px white groove;
     padding: 8px 10px;
@@ -69,7 +68,7 @@ h5{
 }
 
 .page-btn:disabled {
-    background-color: #ccc;
+    background-color: #595959;
     cursor: not-allowed;
 }
 
