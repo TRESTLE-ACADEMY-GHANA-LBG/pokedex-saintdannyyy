@@ -43,18 +43,22 @@ function displayPokemonDetails(pokemonName) {
             const types = data.types.map(type => type.type.name).join(", ");
             const weight = data.weight;
             const moves = data.moves.map(move => move.move.name).slice(0, 5).join(", ");
-            
-            pokemonDetailsElement.innerHTML = `
-                <h2>${pokemonName}</h2>
-                <p>Species: ${species}</p>
-                <p>Stats: ${stats}</p>
-                <p>Types: ${types}</p>
-                <p>Weight: ${weight}</p>
-                <p>Moves: ${moves}</p>
-            `;
+
+            Swal.fire({
+                title: `Details for ${pokemonName}`,
+                html: `
+                    <p>Species: ${species}</p>
+                    <p>Stats: ${stats}</p>
+                    <p>Types: ${types}</p>
+                    <p>Weight: ${weight}</p>
+                    <p>Moves: ${moves}</p>
+                `,
+                confirmButtonText: 'OK',
+            });
         })
         .catch(error => console.error("Error fetching Pokémon details:", error));
 }
+
 
 function updatePaginationButtons() {
     prevButton.disabled = currentPage === 1;
@@ -83,27 +87,55 @@ function updatePageNumber() {
     pageNumElement.textContent = `Page ${currentPage}`;
 }
 
+function displaySearchResults(data) {
+    const searchTerm = searchInput.value.trim().toLowerCase();
+    const matchingPokemons = data.results.filter(pokemon => pokemon.name.includes(searchTerm));
+
+    Swal.fire({
+        title: `Search Results for "${searchTerm}"`,
+        html: getSearchResultsHTML(matchingPokemons),
+        confirmButtonText: 'OK',
+    });
+}
+
+function getSearchResultsHTML(results) {
+    if (results.length > 0) {
+        return results.map(pokemon => {
+            return `
+                <div class="pokemon-card" style="padding:20px; margin-bottom:10px;">
+                    <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon.url.split('/')[6]}.png" alt="${pokemon.name}">
+                    <p>${pokemon.name}</p>
+                </div>
+            `;
+        }).join('');
+    } else {
+        return "<p>No results found.</p>";
+    }
+}
+
 searchInput.addEventListener("input", () => {
     const searchTerm = searchInput.value.trim().toLowerCase();
 
-    searchResultsElement.innerHTML = "";
+    if (searchTerm.length > 3) {
+        // Show loading indicator
+        searchResultsElement.innerHTML = "<p>Loading...</p>";
 
-    if (searchTerm.length >= 3) {
-        fetch(`https://pokeapi.co/api/v2/pokemon/${searchTerm}`)
+        fetch(`https://pokeapi.co/api/v2/pokemon?limit=2000`)
             .then(response => response.json())
             .then(data => {
-                const pokemonName = data.name;
-                const pokemonCard = document.createElement("div");
-                pokemonCard.classList.add("pokemon-card");
-                pokemonCard.innerHTML = `
-                    <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${data.id}.png" alt="${pokemonName}">
-                    <p>${pokemonName}</p>
-                `;
-                searchResultsElement.appendChild(pokemonCard);
+                searchResultsElement.innerHTML = ""; // Clear previous results
+                const matchingPokemons = data.results.filter(pokemon => pokemon.name.includes(searchTerm));
+                searchResultsElement.innerHTML = getSearchResultsHTML(matchingPokemons);
+                displaySearchResults(data);
             })
             .catch(error => {
-                searchResultsElement.textContent = "No results found.";
+                console.error("Error fetching Pokémon:", error);
+                // Display an error message
+                searchResultsElement.innerHTML = "<p>Error fetching Pokémon. Please try again.</p>";
             });
+    } else {
+        // Clear search results if the search term is less than 3 characters
+        searchResultsElement.innerHTML = "";
     }
 });
 
